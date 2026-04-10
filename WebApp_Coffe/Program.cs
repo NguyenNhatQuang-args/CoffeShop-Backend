@@ -8,7 +8,15 @@ using WebApp_Coffe.Middleware;
 using WebApp_Coffe.Repositories;
 using WebApp_Coffe.Services;
 
+// Load .env file (nằm ở solution root, 1 cấp trên project)
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
+if (File.Exists(envPath))
+    DotNetEnv.Env.Load(envPath);
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Override config from environment variables (.env → env vars → override appsettings)
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddDbContext<CoffeeShopDbContext>(options =>
