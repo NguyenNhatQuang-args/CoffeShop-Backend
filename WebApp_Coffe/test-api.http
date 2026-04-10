@@ -1,0 +1,99 @@
+@baseUrl = https://localhost:7198
+@api = {{baseUrl}}/api
+
+### --- PUBLIC ENDPOINTS ---
+
+### 1. Get all categories
+GET {{api}}/categories
+Accept: application/json
+
+### 2. Get category by slug
+GET {{api}}/categories/coffee
+Accept: application/json
+
+### 3. Get all products (with filters)
+GET {{api}}/products?page=1&pageSize=10
+Accept: application/json
+
+### 4. Get featured products
+GET {{api}}/products/featured
+Accept: application/json
+
+### 5. Get product by slug
+GET {{api}}/products/espresso
+Accept: application/json
+
+### 6. Get blogs
+GET {{api}}/blog
+Accept: application/json
+
+### 7. Get stores
+GET {{api}}/stores
+Accept: application/json
+
+### --- AUTH ENDPOINTS ---
+
+### 8. Login Admin (This will automatically set HttpOnly Cookie for subsequent requests)
+# @name loginAdmin
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### 9. Refresh Token
+POST {{api}}/auth/refresh
+Content-Type: application/json
+
+### --- ADMIN ENDPOINTS (Requires Cookie from Login) ---
+
+### 10. Create new category
+POST {{api}}/admin/categories
+Content-Type: application/json
+
+{
+  "name": "Summer Drinks",
+  "description": "Special drinks for summer",
+  "isActive": true
+}
+
+### 11. Create new product
+POST {{api}}/admin/products
+Content-Type: application/json
+
+{
+  "name": "Iced Coconut Coffee",
+  "description": "Refreshing iced coffee with coconut milk",
+  "isActive": true,
+  "isFeatured": true,
+  "categoryId": "11111111-1111-1111-1111-111111111111",
+  "variants": [
+    {
+      "sizeName": "M",
+      "temperature": "Cold",
+      "price": 3.5,
+      "isAvailable": true
+    }
+  ],
+  "tags": [
+    "summer",
+    "new"
+  ]
+}
+
+### 12. Create blog post
+POST {{api}}/admin/blog
+Content-Type: application/json
+
+{
+  "title": "How we make our Espresso",
+  "content": "Our espresso is made from 100% Arabica beans...",
+  "authorName": "John Doe",
+  "isPublished": true
+}
+
+### 13. Logout
+POST {{api}}/auth/logout
+Content-Type: application/json

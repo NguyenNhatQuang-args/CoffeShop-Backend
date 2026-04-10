@@ -1,0 +1,238 @@
+@baseUrl = https://localhost:7198
+@api = {{baseUrl}}/api
+
+### ========================================
+### AUTH FLOW
+### ========================================
+
+### 1. Login Admin (Expected: 200 OK + Set-Cookie Header with jwtToken and refreshToken)
+# @name loginAdmin
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin@coffeeshop.com",
+  "password": "Admin@123"
+}
+
+### 2. Refresh Token (Expected: 200 OK + New Set-Cookie Headers for both tokens)
+POST {{api}}/auth/refresh
+Content-Type: application/json
+
+### 3. Logout (Expected: 200 OK + Cleared Cookies)
+POST {{api}}/auth/logout
+Content-Type: application/json
+
+
+### ========================================
+### PUBLIC ENDPOINTS
+### ========================================
+
+### 4. Get all categories
+GET {{api}}/categories
+Accept: application/json
+
+### 5. Get category by slug
+GET {{api}}/categories/coffee
+Accept: application/json
+
+### 6. Get all products
+GET {{api}}/products?page=1&pageSize=10
+Accept: application/json
+
+### 7. Get featured products
+GET {{api}}/products/featured
+Accept: application/json
+
+### 8. Get product by slug
+GET {{api}}/products/espresso
+Accept: application/json
+
+### 9. Get blogs
+GET {{api}}/blog
+Accept: application/json
+
+### 10. Get stores
+GET {{api}}/stores
+Accept: application/json
+
+
+### ========================================
+### ADMIN ENDPOINTS (Requires Cookie from Login)
+### ========================================
+
+### 11. Create Category with Image
+# @name createCategory
+POST {{api}}/admin/categories
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Test Category
+--boundary
+Content-Disposition: form-data; name="Description"
+
+This is a test category
+--boundary
+Content-Disposition: form-data; name="IsActive"
+
+true
+--boundary
+Content-Disposition: form-data; name="ImageFile"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--
+
+### 12. Update Category
+@categoryId = {{createCategory.response.body.data.id}}
+PUT {{api}}/admin/categories/{{categoryId}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Test Category Updated
+--boundary
+Content-Disposition: form-data; name="IsActive"
+
+true
+--boundary--
+
+### 13. Delete Category
+DELETE {{api}}/admin/categories/{{categoryId}}
+
+
+### 14. Create Product with Image
+# @name createProduct
+POST {{api}}/admin/products
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Latte Machiato
+--boundary
+Content-Disposition: form-data; name="Description"
+
+Delicious
+--boundary
+Content-Disposition: form-data; name="IsActive"
+
+true
+--boundary
+Content-Disposition: form-data; name="IsFeatured"
+
+true
+--boundary
+Content-Disposition: form-data; name="CategoryId"
+
+11111111-1111-1111-1111-111111111111
+--boundary
+Content-Disposition: form-data; name="Variants[0].SizeName"
+
+M
+--boundary
+Content-Disposition: form-data; name="Variants[0].Temperature"
+
+Hot
+--boundary
+Content-Disposition: form-data; name="Variants[0].Price"
+
+4.5
+--boundary
+Content-Disposition: form-data; name="Variants[0].IsAvailable"
+
+true
+--boundary
+Content-Disposition: form-data; name="Tags[0]"
+
+bestseller
+--boundary
+Content-Disposition: form-data; name="ImageFile"; filename="test_product.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--
+
+### 15. Delete Product
+@productId = {{createProduct.response.body.data.id}}
+DELETE {{api}}/admin/products/{{productId}}
+
+
+### 16. Upload Image explicitly to Product folder
+# @name uploadImage
+POST {{api}}/admin/upload/product
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="explicit_upload.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--
+
+### 17. Delete explicitly uploaded image
+@fileUrl = {{uploadImage.response.body.data}}
+DELETE {{api}}/admin/upload?fileUrl={{fileUrl}}
+
+
+### 18. Create Blog Post
+# @name createBlog
+POST {{api}}/admin/blog
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Title"
+
+Welcome to our new coffee shop!
+--boundary
+Content-Disposition: form-data; name="Content"
+
+We are so excited to open...
+--boundary
+Content-Disposition: form-data; name="AuthorName"
+
+Admin
+--boundary
+Content-Disposition: form-data; name="IsPublished"
+
+true
+--boundary--
+
+### 19. Delete Blog Post
+@blogId = {{createBlog.response.body.data.id}}
+DELETE {{api}}/admin/blog/{{blogId}}
+
+
+### 20. Create Store
+# @name createStore
+POST {{api}}/admin/stores
+Content-Type: application/json
+
+{
+  "name": "District 1 Branch",
+  "address": "123 Main Street",
+  "phone": "0123456789",
+  "openTime": "08:00",
+  "closeTime": "22:00",
+  "isActive": true
+}
+
+### 21. Update Store
+@storeId = {{createStore.response.body.data.id}}
+PUT {{api}}/admin/stores/{{storeId}}
+Content-Type: application/json
+
+{
+  "name": "District 1 Branch - Updated",
+  "address": "123 Main Street",
+  "phone": "0123456789",
+  "openTime": "08:00",
+  "closeTime": "23:00",
+  "isActive": true
+}
+
+### 22. Delete Store
+DELETE {{api}}/admin/stores/{{storeId}}

@@ -1,0 +1,119 @@
+@baseUrl = https://localhost:7198
+@api = {{baseUrl}}/api
+
+### ========================================
+### AUTHENTICATION (Run this first to get cookie)
+### ========================================
+
+### 1. Login Admin
+# @name loginAdmin
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin@coffeeshop.com",
+  "password": "Admin@123"
+}
+
+### 2. Refresh Token
+POST {{api}}/auth/refresh
+Content-Type: application/json
+
+### 3. Logout
+POST {{api}}/auth/logout
+Content-Type: application/json
+
+
+### ========================================
+### PUBLIC ENDPOINTS
+### ========================================
+
+### 4. Get all active categories
+GET {{api}}/categories
+Accept: application/json
+
+### 5. Get all products (with pagination & filters)
+GET {{api}}/products?page=1&pageSize=10
+Accept: application/json
+
+### 6. Get featured products
+GET {{api}}/products/featured
+Accept: application/json
+
+### 7. Get blogs
+GET {{api}}/blog
+Accept: application/json
+
+### 8. Get stores
+GET {{api}}/stores
+Accept: application/json
+
+
+### ========================================
+### ADMIN ENDPOINTS (Requires Auth Cookie)
+### ========================================
+
+### 9. Create new category (FormData with Image)
+POST {{api}}/admin/categories
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Summer Drinks
+--boundary
+Content-Disposition: form-data; name="Description"
+
+Special drinks for summer
+--boundary
+Content-Disposition: form-data; name="IsActive"
+
+true
+--boundary
+Content-Disposition: form-data; name="ImageFile"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--
+
+### 10. Create new product (FormData with Image)
+POST {{api}}/admin/products
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Iced Coconut Coffee
+--boundary
+Content-Disposition: form-data; name="Description"
+
+Refreshing iced coffee with coconut milk
+--boundary
+Content-Disposition: form-data; name="IsActive"
+
+true
+--boundary
+Content-Disposition: form-data; name="IsFeatured"
+
+true
+--boundary
+Content-Disposition: form-data; name="CategoryId"
+
+11111111-1111-1111-1111-111111111111
+--boundary
+Content-Disposition: form-data; name="ImageFile"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--
+
+### 11. Upload product image separately
+POST {{api}}/admin/upload/product
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./wwwroot/sample.jpg
+--boundary--

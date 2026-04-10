@@ -1,0 +1,11 @@
+﻿START TRANSACTION;
+DELETE FROM "Users" WHERE "Id" != '99999999-9999-9999-9999-999999999999';
+
+UPDATE "Users" SET "PasswordHash" = '$2a$11$q2LzNjZBwt754ssEkedFN.dNj4FT7PWJrYsnRmMAgwFl4MWGECg9i'
+WHERE "Id" = '99999999-9999-9999-9999-999999999999';
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20260409060725_UpdateSeedDataToHashPassword', '10.0.5');
+
+COMMIT;
+

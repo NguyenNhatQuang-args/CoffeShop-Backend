@@ -1,0 +1,6 @@
+@WebApp_Coffe_HostAddress = http://localhost:5199
+
+GET {{WebApp_Coffe_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
