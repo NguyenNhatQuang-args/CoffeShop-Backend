@@ -43,17 +43,17 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 // CORS
-var corsOrigins = builder.Configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:5173" };
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("DefaultCorsPolicy", policy =>
-    {
-        policy.WithOrigins(corsOrigins)
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
-});
+var allowedOrigins = builder.Configuration
+    .GetSection("CorsSettings:AllowedOrigins")
+    .Get<string[]>()
+    ?? new[] { "http://localhost:5173" };
+
+builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy =>
+    policy.WithOrigins(allowedOrigins)
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials()
+));
 
 // Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -110,7 +110,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
-app.UseCors("DefaultCorsPolicy");
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
