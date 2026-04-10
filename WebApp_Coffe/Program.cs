@@ -98,6 +98,22 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Auto migration
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CoffeeShopDbContext>();
+    try
+    {
+        db.Database.Migrate();
+        Console.WriteLine("Migration completed successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Migration failed: {ex.Message}");
+        throw;
+    }
+}
+
 // Configure the HTTP request pipeline.
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
