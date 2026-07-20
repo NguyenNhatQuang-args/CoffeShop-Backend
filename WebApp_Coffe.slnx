@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="PhoneStore.API/PhoneStore.API.csproj" />
   <Project Path="WebApp_Coffe/WebApp_Coffe.csproj" />
 </Solution>
