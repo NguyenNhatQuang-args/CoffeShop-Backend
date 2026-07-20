@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using WebApp_Coffe.DTOs;
 using WebApp_Coffe.DTOs.Common;
 using WebApp_Coffe.Services;
@@ -19,6 +20,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("LoginRateLimit")] // Max 5 lan thu / 1 phut / IP
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var result = await _service.LoginAsync(request);
